@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    style="@style/layout_full">
+
+
+
+    <LinearLayout
+            style="@style/layout_horizontal"
+            android:layout_weight="8"
+            android:orientation="vertical">
+
+        <chart.CHOCRCensusChart
+            android:id="@+id/ocr_census_chart"
+            style="@style/layout_vertical"
+            android:layout_weight="8"/>
+
+        <LinearLayout
+            style="@style/layout_vertical"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+            <!--其他按钮-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:layout_weight="1"
+                android:text="温馨提示:\n操作光线请按照 弯曲(保持1s)-恢复(保持1s)的方式循环进行" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        style="@style/layout_horizontal"
+        android:layout_weight="2"
+        >
+
+        <Button
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:text="线路设置"
+            android:id="@+id/btn_linesetup" />
+
+        <Button
+            android:text="普查测试"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_censustest" />
+        
+        <Button
+            android:text="停止测试"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_stopcensustest"  />
+
+        <Button
+            android:text="追踪关联"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_goto_tracefault" />
+
+        <Button
+            android:text="帮助"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_help" />
+
+        <Button
+            android:text="主页"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_homepage" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_full"
+    android:orientation="horizontal">
+
+
+    <Button
+        style="@style/layout_wrap"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/btn_tracing_fault"
+        android:text="故障追踪"/>
+
+    <Button
+        android:text="光缆普查"
+        style="@style/layout_wrap"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/btn_ocr_census"
+         />
+
+
+
+    <Button
+        android:text="OTDR"
+        style="@style/layout_wrap"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/btn_OTDR"
+        />
+
+    <Button
+        android:text="系统设置"
+        style="@style/layout_wrap"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/btn_setting"
+        />
+
+
+</LinearLayout>

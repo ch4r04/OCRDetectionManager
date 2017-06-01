@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    style="@style/layout_full"
+    android:id="@+id/trace_layout">
+
+
+    <LinearLayout
+            style="@style/layout_horizontal"
+            android:layout_weight="8"
+            android:orientation="vertical">
+
+        <chart.CHTraceLineChart
+            android:id="@+id/tracing_fault_chart"
+            style="@style/layout_vertical"
+            android:layout_weight="8"
+            />
+
+        <LinearLayout
+            style="@style/layout_vertical"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/layout_vertical"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+                <Button
+                    android:text="Y放大"
+                    style="@style/layout_horizontal"
+                    android:id="@+id/btn_yzoomin"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Y缩小"
+                    style="@style/layout_horizontal"
+                    android:id="@+id/btn_yzoomout"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="X放大"
+                    style="@style/layout_horizontal"
+                    android:id="@+id/btn_xzoomin"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="X缩小"
+                    style="@style/layout_horizontal"
+                    android:id="@+id/btn_zoomout"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="XY原始"
+                    style="@style/layout_horizontal"
+                    android:id="@+id/btn_xyfit"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/layout_vertical"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    style="@style/layout_horizontal"
+                    android:id="@+id/textView2"
+                    android:layout_weight="1"
+                    android:text="弯曲点与原点距离" />
+                <TextView
+                    style="@style/layout_horizontal"
+                    android:id="@+id/tv_org_distance"
+                    android:layout_weight="1" />
+                <TextView
+                    style="@style/layout_horizontal"
+                    android:id="@+id/textView4"
+                    android:layout_weight="1"
+                    android:text="弯曲点与追踪点距离" />
+                <TextView
+                    style="@style/layout_horizontal"
+                    android:id="@+id/tv_tracepoint_distance"
+                    android:layout_weight="1" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/layout_horizontal"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:text="线路设置"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_linesetup" />
+
+        <Button
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_gettemplate"
+            android:text="模板获取" />
+
+        <Button
+            android:text="故障追踪"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_starttrace" />
+
+        <Button
+            android:text="帮助"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_help" />
+
+        <Button
+            android:text="主页"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:id="@+id/btn_homepage" />
+    </LinearLayout>
+
+</LinearLayout>

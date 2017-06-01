@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="distance_range">
+        <item>30 Km</item>
+        <item>60 Km</item>
+    </string-array>
+
+    <string-array name="pulse_width">
+        <item>160 ns</item>
+        <item>320 ns</item>
+    </string-array>
+
+    <string-array name="testing_time">
+        <item>5 s</item>
+        <item>10 s</item>
+        <item>15 s</item>
+        <item>30 s</item>
+        <item>60 s</item>
+        <item>120 s</item>
+        <item>180 s</item>
+    </string-array>
+    
+    <string name="refractive_index">1.4685</string>
+
+</resources>
