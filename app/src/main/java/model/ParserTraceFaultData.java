@@ -41,9 +41,24 @@ public class ParserTraceFaultData {
      */
     private ParserTraceFaultData(){}
 
+    private ParserTraceFaultData(LineData ld, int tndp){
+        this.lineData = ld;
+        this.TNDP = tndp;
+    }
     public static synchronized ParserTraceFaultData initParserTraceFaultData(byte[] data){
         if (instance == null)
             instance = new ParserTraceFaultData(data);
+        return instance;
+    }
+
+    public static synchronized ParserTraceFaultData initAllAttri(LineData d, int tndp){
+       if (instance == null)
+           instance = new ParserTraceFaultData(d,tndp);
+        return instance;
+
+    }
+
+    public static ParserTraceFaultData getInstance() {
         return instance;
     }
 

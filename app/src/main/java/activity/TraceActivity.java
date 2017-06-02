@@ -3,6 +3,7 @@ package activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.vilyever.socketclient.helper.SocketClientReceiveDelegate;
 import com.vilyever.socketclient.helper.SocketResponsePacket;
 
 import chart.CHTraceLineChart;
+import es.dmoral.toasty.Toasty;
 import helper.CommonHelper;
 import model.LineSetupModel;
 import model.ParserDataJudge;
@@ -24,13 +26,16 @@ import model.ParserLineSetupData;
 import model.ParserTraceFaultData;
 import socket.CHSocketClient;
 import socket.FrameDataSocket;
+import tasks.GetTemplateParserTask;
+import tasks.Response;
+import tasks.TraceFaultParserTask;
 import utils.CHToast;
 
 /**
  * Created by xingr on 2017/4/30.
  */
 
-public class TraceActivity extends BaseActivity implements View.OnClickListener,SocketClientReceiveDelegate {
+public class TraceActivity extends BaseActivity implements View.OnClickListener,SocketClientReceiveDelegate, Response.Listener<Integer>{
 
 
     /**
@@ -112,6 +117,13 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
     private Button mBtnHomepage;
     private LinearLayout mTraceLayout;
 
+    /**
+     * 故障追踪得到的数据进行解析异步任务
+     */
+    TraceFaultParserTask traceTask;
+
+    GetTemplateParserTask templateTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +159,7 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
                     CHToast.showShort(this, "未设置线路 无法获取模板");
                     break;
                 }
+                Toasty.info(this,"正在进行模板获取").show();
                 chSocketClient.getSocketClient().sendData(FrameDataSocket.sendGetTemplate());
                 //....
                 break;
@@ -156,6 +169,7 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
                     CHToast.showShort(this, "未设置线路 无法故障追踪");
                     break;
                 }
+                Toasty.info(this,"正在进行故障追踪").show();
                 chSocketClient.getSocketClient().sendData(FrameDataSocket.sendStartTraceFault());
                 break;
             case R.id.btn_help:
@@ -252,37 +266,40 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
         mTraceLayout.setOnClickListener(this);
 
         chSocketClient.getSocketClient().registerSocketClientReceiveDelegate(this);
+
+        if (parserLineSetupData.getInstance() != null){
+//            Toasty.success(this,"已经完成线路设置，可以进行测试!").show();
+            START_TRACE_FAULT = 1;
+            GET_TEMPLATE_FLAG = 1;
+            mTracingFaultChart.setZeroData();
+
+        }
     }
 
 
+    /**
+     * 获取数据成后进行解析操作
+     * @param client
+     * @param responsePacket
+     */
     @Override
     public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
 
 //        ParserDataJudge.parserData(responsePacket.getData());
+        //判断是进行什么操作
         int resultFlag = ParserDataJudge.parserData(responsePacket.getData());
+
         if ( resultFlag == 1){
             //进行获取模板操作
-            ParserGetTemplateData parserGetTemplateData = ParserGetTemplateData.initParserGetTemplateData(responsePacket.getData());
-
-            mTracingFaultChart.setData(parserGetTemplateData.getLineData());
-            //添加右上角描述
-            mTracingFaultChart.setRightTopLegendDes(String.valueOf(LineSetupModel.getInstance().getTracePointLoc()/ 1000.0), String.valueOf(LineSetupModel.getInstance().getmTime()), String.valueOf(LineSetupModel.getInstance().getmTime()));
-            mTracingFaultChart.animateX(2000);
-            mTracingFaultChart.invalidate();
-
+            Toasty.info(this, "获取到数据 正在解析").show();
+            templateTask = new GetTemplateParserTask(this, this, responsePacket.getData());
+            templateTask.execute();
         }else if (resultFlag == 2){
-            //进行追踪错误操作
-            //进行获取模板操作
-            ParserTraceFaultData parserTraceFaultData = ParserTraceFaultData.initParserTraceFaultData(responsePacket.getData());
-
-            mTracingFaultChart.setData(parserTraceFaultData.getLineData());
-            //添加右上角描述
-//            mTracingFaultChart.setRightTopLegendDes(String.valueOf(LineSetupModel.getInstance().getTracePointLoc()/ 1000.0), String.valueOf(LineSetupModel.getInstance().getmTime()), String.valueOf(LineSetupModel.getInstance().getmTime()));
-            mTracingFaultChart.animateX(3000);
-            mTracingFaultChart.invalidate();
-
+            Toasty.info(this,"获取到数据 开始解析").show();
+            //进行解析数据操作
+            traceTask = new TraceFaultParserTask(this, this, responsePacket.getData());
+            traceTask.execute();
         }
-
     }
 
     @Override
@@ -297,4 +314,41 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
         super.finish();
         chSocketClient.getSocketClient().removeSocketClientReceiveDelegate(this);
     }
+
+
+    /**
+     * 异步解析响应
+     * @param result
+     */
+
+    @Override
+    public void onResponse(Integer result) {
+        if (result == 1){
+            ParserTraceFaultData parserTraceFaultData = ParserTraceFaultData.getInstance();
+            mTracingFaultChart.setData(parserTraceFaultData.getLineData());
+            //添加右上角描述
+            mTracingFaultChart.setRightTopLegendDes(String.valueOf(LineSetupModel.getInstance().getTracePointLoc()/ 1000.0), String.valueOf(LineSetupModel.getInstance().getmTime()), String.valueOf(LineSetupModel.getInstance().getmTime()));
+            mTracingFaultChart.animateX(3000);
+            mTracingFaultChart.invalidate();
+        }
+        else if (result == 2){
+
+            ParserGetTemplateData parserGetTemplateData = ParserGetTemplateData.getInstance();
+            mTracingFaultChart.setData(parserGetTemplateData.getLineData());
+            //添加右上角描述
+            mTracingFaultChart.setRightTopLegendDes(String.valueOf(LineSetupModel.getInstance().getTracePointLoc()/ 1000.0), String.valueOf(LineSetupModel.getInstance().getmTime()), String.valueOf(LineSetupModel.getInstance().getmTime()));
+            mTracingFaultChart.animateX(2000);
+            mTracingFaultChart.invalidate();
+
+        }
+    }
+
+    @Override
+    public void onErrorResponse(Exception exception) {
+
+    }
+
+
+
+
 }

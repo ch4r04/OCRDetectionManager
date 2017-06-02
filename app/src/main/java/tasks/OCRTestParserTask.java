@@ -1,12 +1,12 @@
-package model;
+package tasks;
 
-/**
- * Created by ch4r0n on 2017/5/13.
- */
-
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.View;
 
+import com.bysj.ch4r0n.ocrdetectionmanager.R;
+import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -16,77 +16,63 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import activity.OCRCensusActivity;
+import activity.TraceActivity;
+import model.ParserOCRTestData;
 import utils.ByteDisposeUtil;
 import utils.NetworkUtils;
 
 /**
- * 解析获取模板的字节数据
+ * Created by ch4r0n on 2017/6/1.
  */
-public class ParserGetTemplateData {
 
-    /**
-     * 用于图形展示
-     */
-    private LineData lineData;
+public class OCRTestParserTask extends BaseAsyncTask<byte[], Integer, Boolean> {
 
-    /**
-     * 追踪点位置
-     */
-    private int TNDP;
+    private Context context;
 
-    private static ParserGetTemplateData instance = null;
+    private byte[] responseData;
 
-    /**
-     * 构造方法私有化
-     */
-    private ParserGetTemplateData(LineData d, int tndp){
-        this.lineData = d;
-        this.TNDP = tndp;
-    }
+    private NumberProgressBar lsProcessBar;
 
-    private ParserGetTemplateData(){};
+    public OCRTestParserTask(Response.Listener<Boolean> listener, Context context, byte[] data) {
+        super(listener, context);
 
-    public static synchronized ParserGetTemplateData initParserGetTemplateData(byte[] data){
-        if (instance == null)
-            instance = new ParserGetTemplateData(data);
-        return instance;
-    }
+        this.context = context;
 
-    public static synchronized  ParserGetTemplateData initAllAttri(LineData d, int tndp){
-        if (instance == null)
-            instance = new ParserGetTemplateData(d,tndp);
-        return instance;
+        this.responseData = data;
+
+        lsProcessBar = (NumberProgressBar) ((OCRCensusActivity)context).findViewById(R.id.ocrcensus_progressbar);
 
     }
 
-    public static ParserGetTemplateData getInstance() {
-        return instance;
-    }
+    @Override
+    protected Response<Boolean> doInBackground(byte[]... params) {
+//        return null;
 
-    /**
-     * 返回数据格式 ffffeeee81000006 TNDP + point + eeeeffff
-     * @param data
-     */
-    private ParserGetTemplateData(byte[] data){
+        byte[] data = responseData;
 
         String header = ByteDisposeUtil.toHex(data,0,4).toString();
         String trail = ByteDisposeUtil.toHex(data,data.length - 4,data.length).toString();
         Log.e("VAILDDATA->",header+trail);
         if (header.equals("ffffeeee") == false || trail.equals("eeeeffff") == false){
             Log.e("JUDGE","this is a unvaild data");
-            return;
+            return Response.success(false);
         }
 
         List<Entry> entries = new ArrayList<Entry>();
         //获取追踪点
         int point_count = Integer.parseInt(ByteDisposeUtil.toHex(data, 8, 12).toString(),16);
-        this.TNDP = point_count;
         //获取数据点
         float key_point = 0.000f;
         for (int i = 8;i < data.length - 4; i += 4){
             float value_point = (float) (NetworkUtils.bytesToInt2(ByteDisposeUtil.byteInRange(data, i, i + 4),0) / 1000000.0);
             entries.add(new BarEntry(key_point,value_point));
             key_point += 0.001f;
+
+            //计算进度 更新进度条
+            float mprofloat = i / (data.length - 4.00f) * 100;
+            int mproint = Math.round(mprofloat);
+            publishProgress(mproint);
         }
 
         //设置LineData
@@ -104,23 +90,37 @@ public class ParserGetTemplateData {
         ds2.setDrawValues(false);
         sets.add(ds2);
         LineData d = new LineData(sets);
-        this.lineData = d;
+        ParserOCRTestData parserOCRTestData = ParserOCRTestData.initAllAttri(d,point_count);
 
+        return Response.success(true);
     }
 
-    public LineData getLineData() {
-        return lineData;
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        lsProcessBar.setVisibility(View.VISIBLE);
     }
 
-    public void setLineData(LineData lineData) {
-        this.lineData = lineData;
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        lsProcessBar.setProgress(values[0]);
     }
 
-    public int getTNDP() {
-        return TNDP;
+    @Override
+    protected void onCancelled(Response<Boolean> booleanResponse) {
+        super.onCancelled(booleanResponse);
     }
 
-    public void setTNDP(int TNDP) {
-        this.TNDP = TNDP;
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
+    @Override
+    protected void onPostExecute(Response<Boolean> response) {
+        super.onPostExecute(response);
+        lsProcessBar.setVisibility(View.GONE);
     }
 }

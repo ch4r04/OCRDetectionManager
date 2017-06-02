@@ -10,7 +10,6 @@ import tasks.Response.Listener;
 
 public class LoginTask extends BaseAsyncTask<Void, Void, Boolean> {
 	private String deviceInterfaceID;	//连接设备号
-	private CHSocketClient socketClient;
 
 	private String socketURL;
 

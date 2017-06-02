@@ -19,6 +19,7 @@ public class Response<T> {
 	public static <T> Response<T> error(Exception e) {
 		return new Response<T>(e);
 	}
+
 	
 	private T result;
 	
@@ -27,6 +28,7 @@ public class Response<T> {
 	private Response(T result) {
 		this.result = result;
 	}
+
 	
 	private Response(Exception exception) {
 		this.exception = exception;

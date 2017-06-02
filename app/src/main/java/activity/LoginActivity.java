@@ -15,10 +15,10 @@ import com.vilyever.socketclient.helper.SocketClientDelegate;
 import com.vilyever.socketclient.helper.SocketClientReceiveDelegate;
 import com.vilyever.socketclient.helper.SocketResponsePacket;
 
+import es.dmoral.toasty.Toasty;
 import socket.CHSocketClient;
 import socket.FrameDataSocket;
-import tasks.LoginTask;
-import utils.CHToast;
+import utils.ValidatorUtils;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener,SocketClientDelegate,SocketClientReceiveDelegate{
     private static final int REQUEST_CODE_LOGIN = 1;
@@ -61,12 +61,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 break;
             //点击登录
             case R.id.btn_login:
+               //判断输入是否合法
+                if (ValidatorUtils.isVaildDevice(deviceInterfaceIDText.getText().toString()) == false){
+                    Toasty.warning(this, "输入不合法 请检查参数").show();
+                    return;
+                }
+
                 //创建一个连接
                 if (chSocketClient.getSocketClient().isConnected()){
                     chSocketClient.getSocketClient().sendData(FrameDataSocket.sendToConnectRequest(deviceInterfaceIDText.getText().toString()));
+                }else {
+                    chSocketClient.getSocketClient().connect();
                 }
-                chSocketClient.getSocketClient().connect();
-
                 break;
 
         }
@@ -76,25 +82,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onConnected(SocketClient client) {
         Log.e("GAO","连接成功");
         chSocketClient.getSocketClient().sendData(FrameDataSocket.sendToConnectRequest(deviceInterfaceIDText.getText().toString()));
-
     }
 
     @Override
     public void onDisconnected(SocketClient client) {
-        CHToast.showShort(getApplicationContext(),"连接已断开");
+        Toasty.warning(getApplicationContext(),"连接失败，请检查服务器设置").show();
         Log.e("GAO","连接失败");
-
     }
 
     @Override
     public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
         if (responsePacket.getMessage().equals("OK_CONNECT") ){
             //接收到服务端发送过来的确认字符串
-            CHToast.showShort(this,"连接设备成功");
+            Toasty.success(this,"连接设备成功").show();
             startActivity(new Intent(this, MainActivity.class));
             finish();
             chSocketClient.getSocketClient().removeSocketClientDelegate(this);
             chSocketClient.getSocketClient().removeSocketClientReceiveDelegate(this);
+        }else {
+            Toasty.error(this,"连接设备失败，设备码不正确").show();
         }
     }
 

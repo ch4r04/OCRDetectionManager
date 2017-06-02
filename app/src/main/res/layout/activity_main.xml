@@ -22,17 +22,8 @@
          />
 
 
-
     <Button
-        android:text="OTDR"
-        style="@style/layout_wrap"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:id="@+id/btn_OTDR"
-        />
-
-    <Button
-        android:text="系统设置"
+        android:text="退出"
         style="@style/layout_wrap"
         android:layout_weight="1"
         android:layout_gravity="center"

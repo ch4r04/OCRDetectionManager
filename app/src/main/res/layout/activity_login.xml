@@ -110,7 +110,7 @@
                     android:layout_toRightOf="@id/imageView1"
                     android:background="@android:color/transparent"
                     android:hint="请输入接口号以进行连接"
-                    android:maxLength="11"
+                    android:maxLength="16"
                     android:paddingLeft="10.0dip"
                     android:textSize="18.0sp"
                     android:inputType="textPersonName" />

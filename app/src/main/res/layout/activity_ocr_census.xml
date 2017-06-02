@@ -10,10 +10,26 @@
             android:layout_weight="8"
             android:orientation="vertical">
 
-        <chart.CHOCRCensusChart
-            android:id="@+id/ocr_census_chart"
+        <RelativeLayout
             style="@style/layout_vertical"
-            android:layout_weight="8"/>
+            android:layout_weight="8">
+
+            <chart.CHOCRCensusChart
+                android:id="@+id/ocr_census_chart"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
+
+            <com.daimajia.numberprogressbar.NumberProgressBar
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ocrcensus_progressbar"
+                style="@style/NumberProgressBar_Relax_Blue"
+                />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             style="@style/layout_vertical"

@@ -41,6 +41,7 @@ import socket.CHSocketClient;
 import socket.FrameDataSocket;
 import tasks.LineSetupParserTask;
 import tasks.Response;
+import tasks.TraceFaultParserTask;
 import utils.ByteDisposeUtil;
 import utils.CHToast;
 import utils.NetworkUtils;
@@ -221,6 +222,7 @@ public class LineSetupActivity extends BaseActivity implements OnChartValueSelec
     }
 
 
+    //获取数据成功后进行解析操作
     @Override
     public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
         linesetupTask = new LineSetupParserTask(this, this, responsePacket.getData());

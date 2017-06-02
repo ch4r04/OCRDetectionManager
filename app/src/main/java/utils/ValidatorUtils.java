@@ -27,6 +27,11 @@ public class ValidatorUtils {
     public static final String REGEX_PASSWORD = "^[a-zA-Z0-9]{6,16}$";
 
     /**
+     * 正则表达式:验证连接设备标志(不包含特殊字符)
+     */
+    public static final String REGEX_CONNECTDEVICE = "^[a-zA-Z0-9]{16}$";
+
+    /**
      * 正则表达式:验证手机号
      */
     public static final String REGEX_MOBILE = "^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$";
@@ -111,7 +116,15 @@ public class ValidatorUtils {
      */
     public static boolean isNickName(String nickname){
         return Pattern.matches(REGEX_NICKNAME,nickname);
+    }
 
+    /**
+     * 判断设备是否合法
+     * @param deviceName
+     * @return
+     */
+    public static boolean isVaildDevice(String deviceName){
+        return Pattern.matches(REGEX_CONNECTDEVICE,deviceName);
     }
 
 }

@@ -122,28 +122,5 @@ public class CHOCRCensusChart extends LineChart{
 
     }
 
-    public void setZeroData(){
-        /**
-         * 展示初始图表
-         */
-        List<Entry> entries = new ArrayList<Entry>();
-        entries.add(new BarEntry(0, 0));
-        LineDataSet ds2 = new LineDataSet(entries,"追踪点位置: 15.223 km");
-        ds2.setMode(LineDataSet.Mode.LINEAR);
-        ds2.setCubicIntensity(0.2f);
-        //set1.setDrawFilled(true);
-        ds2.setDrawCircles(false);
-        ds2.setLineWidth(1.8f);
-        ds2.setCircleRadius(4f);
-        ds2.setCircleColor(Color.BLUE);
-        ds2.setHighLightColor(Color.rgb(244, 117, 117));
-        ds2.setColor(Color.BLUE);
-        ds2.setDrawValues(false);
-        LineData lineData = new LineData(ds2);
 
-        this.setData(lineData);
-        this.animateX(2000);
-        this.invalidate();
-//        Log.e("WHY","isNULL");
-    }
 }

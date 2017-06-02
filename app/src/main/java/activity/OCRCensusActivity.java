@@ -17,17 +17,20 @@ import com.vilyever.socketclient.helper.SocketResponsePacket;
 import chart.CHOCRCensusChart;
 import es.dmoral.toasty.Toasty;
 import helper.CommonHelper;
+import model.LineSetupModel;
 import model.ParserLineSetupData;
 import model.ParserOCRTestData;
 import socket.CHSocketClient;
 import socket.FrameDataSocket;
+import tasks.OCRTestParserTask;
+import tasks.Response;
 import utils.CHToast;
 
 /**
  * Created by xingr on 2017/5/1.
  */
 
-public class OCRCensusActivity extends BaseActivity implements View.OnClickListener ,SocketClientReceiveDelegate {
+public class OCRCensusActivity extends BaseActivity implements View.OnClickListener ,SocketClientReceiveDelegate, Response.Listener<Boolean> {
 
     /**
      * 是否启动标志
@@ -73,6 +76,8 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
      */
     private Button mBtnStopCensusTest;
 
+    OCRTestParserTask ocrTestParserTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,16 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
         mBtnHomepage.setOnClickListener(this);
         mBtnStopCensusTest = (Button) findViewById(R.id.btn_stopcensustest);
         mBtnStopCensusTest.setOnClickListener(this);
+
+
+
+        if (parserLineSetupData.getInstance() != null){
+//            Toasty.success(this,"已经完成线路设置，可以进行测试!").show();
+            chSocketClient.getSocketClient().registerSocketClientReceiveDelegate(this);
+            START_OCR_CENSUS = 1;
+            mOcrCensusChart.setZeroData();
+
+        }
     }
 
     @Override
@@ -106,6 +121,7 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_linesetup:
                 startActivityForResult(new Intent(this, LineSetupActivity.class), CommonHelper.ACTIVITY_GOIN_LINESETUP);
+                chSocketClient.getSocketClient().removeSocketClientReceiveDelegate(this);
                 break;
             case R.id.btn_censustest:
                 //未设置线路
@@ -161,16 +177,38 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
-//        Toasty.success(this,"测试完毕 等待获取数据").show();
+        Toasty.success(this,"获取数据完毕 等待解析").show();
+        ocrTestParserTask = new OCRTestParserTask(this,this,responsePacket.getData());
+        ocrTestParserTask.execute();
 
-        ParserOCRTestData testData = ParserOCRTestData.initParserOCRTestData(responsePacket.getData());
-        mOcrCensusChart.setData(testData.getLineData());
-        mOcrCensusChart.animateX(3000);
-        mOcrCensusChart.invalidate();
     }
 
     @Override
     public void onHeartBeat(SocketClient socketClient) {
+    }
+
+
+    @Override
+    public void onResponse(Boolean result) {
+
+        if (result){
+            ParserOCRTestData testData = ParserOCRTestData.getInstance();
+            mOcrCensusChart.setData(testData.getLineData());
+            mOcrCensusChart.animateX(3000);
+            mOcrCensusChart.invalidate();
+        }
+
+    }
+
+    @Override
+    public void onErrorResponse(Exception exception) {
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        chSocketClient.getSocketClient().removeSocketClientReceiveDelegate(this);
     }
 
 

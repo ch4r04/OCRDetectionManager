@@ -34,7 +34,6 @@ public class ParserOCRTestData {
     private int TNDP;
 
 
-
     private static ParserOCRTestData instance = null;
 
     /**
@@ -42,10 +41,28 @@ public class ParserOCRTestData {
      */
     private ParserOCRTestData(){}
 
+    private ParserOCRTestData(LineData d, int tndp){
+        this.lineData = d;
+        this.TNDP = tndp;
+
+    }
+
+    public static ParserOCRTestData getInstance() {
+        return instance;
+    }
+
     public static synchronized ParserOCRTestData initParserOCRTestData(byte[] data){
         if (instance == null)
             instance = new ParserOCRTestData(data);
         return instance;
+    }
+
+    public static synchronized  ParserOCRTestData initAllAttri(LineData d, int tndp){
+        if (instance == null)
+            instance = new ParserOCRTestData(d, tndp);
+        return instance;
+
+
     }
 
     /**
