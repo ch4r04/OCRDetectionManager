@@ -49,7 +49,9 @@ public class CHLineSetupChart extends LineChart {
     }
 
     private void initMyChart(){
+        //设置图表的偏移量
         this.setViewPortOffsets(0, 0, 0, 0);
+        //设置图表背景色
         this.setBackgroundColor(Color.WHITE);
 
         // no description text
@@ -62,6 +64,7 @@ public class CHLineSetupChart extends LineChart {
         this.setDragEnabled(true);
         this.setScaleEnabled(true);
 
+        //设置高亮状态能否开启
         this.setHighlightPerDragEnabled(false);
         this.setHighlightPerTapEnabled(false);
 
@@ -71,13 +74,14 @@ public class CHLineSetupChart extends LineChart {
         this.setDrawGridBackground(false);
         this.setMaxHighlightDistance(300);
 
+        //XY轴的描述
         //add XY Description in the chart
         this.setXYDesc("km", "dB");
         this.getXYDesc().setTextColor(Color.BLUE);
 
-
+        //设置X轴
         XAxis x = this.getXAxis();
-        x.setTextColor(Color.BLACK);
+        x.setTextColor(Color.RED);
         x.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         x.setDrawGridLines(false);
         x.setAxisLineColor(Color.BLACK);
@@ -85,6 +89,7 @@ public class CHLineSetupChart extends LineChart {
 
         YAxis y = this.getAxisLeft();
 //        y.setTypeface(mTfLight);
+        //设置标签的最大值
 //        y.setLabelCount(6, false);
         y.setTextColor(Color.BLACK);
         y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);

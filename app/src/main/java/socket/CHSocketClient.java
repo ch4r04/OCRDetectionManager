@@ -26,8 +26,8 @@ public class CHSocketClient {
     private CHSocketClient(){
         socketClient = new SocketClient();
         socketClient.getAddress().setRemoteIP("192.168.199.97"); // 设置IP
-        socketClient.getAddress().setRemotePort(9999); // 设置端口
-        socketClient.getAddress().setConnectionTimeout(30 * 1000); // 设置连接超时时长
+        socketClient.getAddress().setRemotePort(9998); // 设置端口
+        socketClient.getAddress().setConnectionTimeout(3 * 1000); // 设置连接超时时长
         socketClient.setCharsetName("UTF-8"); // 设置发送和接收String消息的默认编码
         socketClient.getHeartBeatHelper().setHeartBeatInterval(-2); // 设置自动发送心跳包的时间间隔，若值小于0则不发送心跳包
         socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(-2); // 设置远程端多长时间内没有消息发送到本地就自动断开连接，若值小于0则不自动断开

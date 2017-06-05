@@ -41,7 +41,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         chSocketClient.getSocketClient().registerSocketClientDelegate(this);
         chSocketClient.getSocketClient().registerSocketClientReceiveDelegate(this);
-
+        chSocketClient.getSocketClient().connect();
 
     }
 
@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                //判断输入是否合法
                 if (ValidatorUtils.isVaildDevice(deviceInterfaceIDText.getText().toString()) == false){
                     Toasty.warning(this, "输入不合法 请检查参数").show();
-                    return;
+                    break;
                 }
 
                 //创建一个连接
@@ -73,21 +73,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 }else {
                     chSocketClient.getSocketClient().connect();
                 }
-                break;
 
+                break;
         }
     }
 
     @Override
     public void onConnected(SocketClient client) {
         Log.e("GAO","连接成功");
-        chSocketClient.getSocketClient().sendData(FrameDataSocket.sendToConnectRequest(deviceInterfaceIDText.getText().toString()));
+//        chSocketClient.getSocketClient().sendData(FrameDataSocket.sendToConnectRequest(deviceInterfaceIDText.getText().toString()));
     }
 
     @Override
     public void onDisconnected(SocketClient client) {
         Toasty.warning(getApplicationContext(),"连接失败，请检查服务器设置").show();
-        Log.e("GAO","连接失败");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -78,6 +79,18 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
 
     OCRTestParserTask ocrTestParserTask;
 
+    @Override
+    protected void onResume() {
+
+        /**
+         * 设置为横屏
+         */
+        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
