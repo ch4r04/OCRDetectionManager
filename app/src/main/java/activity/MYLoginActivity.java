@@ -49,6 +49,9 @@ public class MYLoginActivity extends Activity implements View.OnClickListener, R
     private LinearLayout mLinearLayout1;
     private FrameLayout mAppRootview;
 
+    /**
+     * 登录异步任务
+     */
     LoginTask task;
 
     @Override

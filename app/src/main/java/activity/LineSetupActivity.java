@@ -1,10 +1,8 @@
 package activity;
 
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,25 +10,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bysj.ch4r0n.ocrdetectionmanager.R;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.vilyever.socketclient.SocketClient;
 import com.vilyever.socketclient.helper.SocketClientReceiveDelegate;
 import com.vilyever.socketclient.helper.SocketResponsePacket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import chart.CHLineSetupChart;
 import es.dmoral.toasty.Toasty;
@@ -41,10 +31,6 @@ import socket.CHSocketClient;
 import socket.FrameDataSocket;
 import tasks.LineSetupParserTask;
 import tasks.Response;
-import tasks.TraceFaultParserTask;
-import utils.ByteDisposeUtil;
-import utils.CHToast;
-import utils.NetworkUtils;
 
 /**
  * Created by xingr on 2017/5/1.
@@ -221,6 +207,14 @@ public class LineSetupActivity extends BaseActivity implements OnChartValueSelec
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (linesetupTask != null && linesetupTask.getStatus() == AsyncTask.Status.RUNNING){
+            //将线程状态标记为取消
+            linesetupTask.cancel(true);
+        }
+    }
 
     //获取数据成功后进行解析操作
     @Override
@@ -242,6 +236,7 @@ public class LineSetupActivity extends BaseActivity implements OnChartValueSelec
 
     @Override
     public void onResponse(Boolean result) {
+
         if (result == true){
             //更新图表
             parserLineSetupData = ParserLineSetupData.getInstance();
@@ -249,7 +244,7 @@ public class LineSetupActivity extends BaseActivity implements OnChartValueSelec
             lineSetupModel.setTracePointLoc(Integer.parseInt(parserLineSetupData.getTracingPoint()));
             trackpointLocEdit.setText(parserLineSetupData.getTracingPoint());
 
-            //使用该数据 初始化一个图表
+            //使用解析完毕的数据 初始化一个图表
             mChart.setData(parserLineSetupData.getLineData());
             //添加追踪点 在得到初始化数据之后显示高亮
             mChart.setDescriptionHighLighter(getApplicationContext(),Integer.parseInt(parserLineSetupData.getTracingPoint().toString()) / 1000.0f,0,0);

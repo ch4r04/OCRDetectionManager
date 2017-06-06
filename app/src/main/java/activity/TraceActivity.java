@@ -2,8 +2,8 @@ package activity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -288,7 +288,6 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
 //        ParserDataJudge.parserData(responsePacket.getData());
         //判断是进行什么操作
         int resultFlag = ParserDataJudge.parserData(responsePacket.getData());
-
         if ( resultFlag == 1){
             //进行获取模板操作
             Toasty.info(this, "获取到数据 正在解析").show();
@@ -313,8 +312,22 @@ public class TraceActivity extends BaseActivity implements View.OnClickListener,
     public void finish() {
         super.finish();
         chSocketClient.getSocketClient().removeSocketClientReceiveDelegate(this);
+
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (traceTask != null && traceTask.getStatus() == AsyncTask.Status.RUNNING){
+            //将线程状态标记为取消
+            traceTask.cancel(true);
+        }
+
+        if (templateTask != null && templateTask.getStatus() == AsyncTask.Status.RUNNING){
+            //将线程状态标记为取消
+            templateTask.cancel(true);
+        }
+    }
 
     /**
      * 异步解析响应

@@ -4,9 +4,7 @@ package model;
  * Created by ch4r0n on 2017/5/2.
  */
 
-import android.content.res.AssetManager;
 import android.graphics.Color;
-import android.os.Environment;
 import android.util.Log;
 
 import com.github.mikephil.charting.data.BarEntry;
@@ -15,11 +13,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,18 +23,19 @@ import utils.NetworkUtils;
  * @name ParserLineSetupData.java
  * @package model
  * @class name：ParserLineSetupData
- * @class 故障追踪model
+ * @class 故障追踪解析过后的数据
  * @anthor ch4r0n QQ:609461975
  * @time 2017/5/2 下午9:30
  */
 public class ParserLineSetupData {
+
     private String startPoint; //起始点
 
     private String tracingPoint; //追踪点
 
     private List<Entry> entryList;  //点数据
 
-    private LineData lineData;      //点数据的坐标点形式
+    private LineData lineData;      //点数据的坐标点形式 用来设置图表
 
     private static ParserLineSetupData instance;
 

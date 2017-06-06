@@ -1,4 +1,4 @@
-package activity;
+package adapters;
 
 import android.content.Context;
 import android.widget.TextView;
@@ -15,7 +15,6 @@ import java.text.DecimalFormat;
 /**
  * Created by xingr on 2017/5/6.
  */
-
 public class XYMarkerView extends MarkerView {
 
     private TextView tvContent;

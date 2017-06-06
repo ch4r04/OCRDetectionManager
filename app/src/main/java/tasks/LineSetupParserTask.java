@@ -1,13 +1,9 @@
 package tasks;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.bysj.ch4r0n.ocrdetectionmanager.R;
 import com.daimajia.numberprogressbar.NumberProgressBar;
@@ -22,7 +18,6 @@ import java.util.List;
 
 import activity.LineSetupActivity;
 import model.ParserLineSetupData;
-import socket.CHSocketClient;
 import utils.ByteDisposeUtil;
 import utils.NetworkUtils;
 
@@ -74,12 +69,16 @@ public class LineSetupParserTask extends BaseAsyncTask<byte[],Integer, Boolean> 
         Log.e("INTPOINT", NetworkUtils.bytesToInt2(ByteDisposeUtil.byteInRange(data,12,16),0) +"");
         float value_point = 0.0f;
         for (int i = 8;i < data.length - 8; i += 4){
+            if (isCancelled()){
+               break;
+            }
             byte []a = ByteDisposeUtil.byteInRange(data, i, i + 4);
             value_point = (float) (NetworkUtils.bytesToInt2(ByteDisposeUtil.byteInRange(data, i, i + 4),0) / 1000000.0);
             entries.add(new BarEntry(key_point,value_point));
             key_point += 0.001f;
             float mprofloat = i / (data.length - 8.00f) * 100;
             int mproint = Math.round(mprofloat);
+            //通过这里传递参数到下面更新progress
             publishProgress(mproint);
         }
         Log.e("LengthOK:",entries.size()+"");
@@ -99,7 +98,7 @@ public class LineSetupParserTask extends BaseAsyncTask<byte[],Integer, Boolean> 
         ds2.setDrawValues(false);
         sets.add(ds2);
         LineData d = new LineData(sets);
-        //通过这里传递参数到下面更新progress
+
         ParserLineSetupData parserLineSetupData = ParserLineSetupData.initWithParserData("",TP,entries,d);
         return Response.success(true);
     }
@@ -108,11 +107,16 @@ public class LineSetupParserTask extends BaseAsyncTask<byte[],Integer, Boolean> 
     protected void onPreExecute() {
         super.onPreExecute();
         lsProcessBar.setVisibility(View.VISIBLE);
+        //初始化一下 从零开始
+        lsProcessBar.setProgress(0);
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        if (isCancelled()){
+            return;
+        }
         lsProcessBar.setProgress(values[0]);
     }
 

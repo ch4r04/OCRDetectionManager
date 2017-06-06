@@ -2,6 +2,7 @@ package activity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -18,7 +19,6 @@ import com.vilyever.socketclient.helper.SocketResponsePacket;
 import chart.CHOCRCensusChart;
 import es.dmoral.toasty.Toasty;
 import helper.CommonHelper;
-import model.LineSetupModel;
 import model.ParserLineSetupData;
 import model.ParserOCRTestData;
 import socket.CHSocketClient;
@@ -88,8 +88,16 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
         if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ocrTestParserTask != null && ocrTestParserTask.getStatus() == AsyncTask.Status.RUNNING){
+            //将线程状态标记为取消
+            ocrTestParserTask.cancel(true);
+        }
     }
 
     @Override
@@ -201,13 +209,14 @@ public class OCRCensusActivity extends BaseActivity implements View.OnClickListe
     }
 
 
+    //接收到处理完毕的数据，进行显示到图表上
     @Override
     public void onResponse(Boolean result) {
 
         if (result){
             ParserOCRTestData testData = ParserOCRTestData.getInstance();
             mOcrCensusChart.setData(testData.getLineData());
-            mOcrCensusChart.animateX(3000);
+            mOcrCensusChart.animateX(5000);
             mOcrCensusChart.invalidate();
         }
 

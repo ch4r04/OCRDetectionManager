@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tracefault_progressbar"
-                style="@style/NumberProgressBar_Relax_Blue"
+                style="@style/NumberProgressBar_Warning_Red"
                 />
         </RelativeLayout>
 

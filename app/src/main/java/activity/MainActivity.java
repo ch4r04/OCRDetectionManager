@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 Intent intent = new Intent();
                 intent.setAction(BORADCAST_ACTION_EXIT);
                 sendBroadcast(intent);//发送退出系统广播  每个接收器都会收到 调动finish（）关闭activity
-//                        CHSocketClient.getCHSocketClient().disConnectedSocket();
+
                 CHSocketClient.getCHSocketClient().getSocketClient().sendData(FrameDataSocket.sendDisconnectRequest());
                 CHSocketClient.getCHSocketClient().getSocketClient().disconnect();
                 finish();

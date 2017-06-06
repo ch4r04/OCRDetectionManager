@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import activity.OCRCensusActivity;
-import activity.TraceActivity;
 import model.ParserOCRTestData;
 import utils.ByteDisposeUtil;
 import utils.NetworkUtils;
@@ -65,6 +64,9 @@ public class OCRTestParserTask extends BaseAsyncTask<byte[], Integer, Boolean> {
         //获取数据点
         float key_point = 0.000f;
         for (int i = 8;i < data.length - 4; i += 4){
+            if (isCancelled()){
+                break;
+            }
             float value_point = (float) (NetworkUtils.bytesToInt2(ByteDisposeUtil.byteInRange(data, i, i + 4),0) / 1000000.0);
             entries.add(new BarEntry(key_point,value_point));
             key_point += 0.001f;
@@ -100,11 +102,15 @@ public class OCRTestParserTask extends BaseAsyncTask<byte[], Integer, Boolean> {
     protected void onPreExecute() {
         super.onPreExecute();
         lsProcessBar.setVisibility(View.VISIBLE);
+        //初始化一下 从零开始
+        lsProcessBar.setProgress(0);
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        if (isCancelled())
+            return;
         lsProcessBar.setProgress(values[0]);
     }
 

@@ -44,10 +44,7 @@ public class LoginTask extends BaseAsyncTask<Void, Void, Boolean> implements Soc
 
 		chSocketClient.getSocketClient().registerSocketClientDelegate(this);
 
-
 	}
-
-
 
 
     @Override
@@ -101,7 +98,7 @@ public class LoginTask extends BaseAsyncTask<Void, Void, Boolean> implements Soc
         Toasty.error((MYLoginActivity)context,"连接失败 服务器未响应").show();
     }
 
-    @Override
+	@Override
 	public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
 		dismissDialog();
 		if (responsePacket.getMessage().equals("OK_CONNECT") ){

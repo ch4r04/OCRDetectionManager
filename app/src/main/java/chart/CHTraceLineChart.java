@@ -12,7 +12,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.highlight.Highlight;
 
-import activity.XYMarkerView;
+import adapters.XYMarkerView;
 import adapters.MyXAxisValueFormatter;
 import adapters.MyYAxisValueFormatter;
 
@@ -37,53 +37,63 @@ public class CHTraceLineChart extends LineChart {
     }
 
     public void initMyChart(){
+        //设置图表的偏移量
         this.setViewPortOffsets(0, 0, 0, 0);
+        //设置图表背景色
         this.setBackgroundColor(Color.WHITE);
 
-        // no description text
+        //设置pieChart图表的描述
         this.getDescription().setEnabled(false);
 
-        // enable touch gestures
+        //设置是否可以触摸，如为false，则不能拖动，缩放等
         this.setTouchEnabled(true);
 
-        // enable scaling and dragging
+        //设置是否可以拖拽，缩放
         this.setDragEnabled(true);
         this.setScaleEnabled(true);
 
+        //设置高亮状态能否开启
         this.setHighlightPerDragEnabled(false);
         this.setHighlightPerTapEnabled(false);
 
-        // if disabled, scaling can be done on x- and y-axis separately
+        // 设置能否扩大缩小
         this.setPinchZoom(false);
 
+        //是否启用网格背景
         this.setDrawGridBackground(false);
+        //设置dp中的最大高光距离。图表上的点击距离比该距离更远的条目不会触发高亮
         this.setMaxHighlightDistance(300);
 
-        //add XY Description in the chart
+        //XY轴的单位描述
         this.setXYDesc("km", "dB");
+        //XY轴单位描述的字体颜色
         this.getXYDesc().setTextColor(Color.BLUE);
 
-
+        //设置X轴样式
         XAxis x = this.getXAxis();
-        x.setTextColor(Color.BLACK);
+        //设置X轴的颜色样式
+        x.setTextColor(Color.RED);
+        //X轴的方向
         x.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         x.setDrawGridLines(false);
         x.setAxisLineColor(Color.BLACK);
+        //X轴的单位显示样式
         x.setValueFormatter(new MyXAxisValueFormatter());
 
         YAxis y = this.getAxisLeft();
 //        y.setTypeface(mTfLight);
+        //设置标签的最大值
 //        y.setLabelCount(6, false);
         y.setTextColor(Color.BLACK);
         y.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         y.setDrawGridLines(false);
         y.setAxisLineColor(Color.BLACK);
+        //Y轴的单位显示样式
         y.setValueFormatter(new MyYAxisValueFormatter());
-
 
         this.getAxisRight().setEnabled(false);
 
-        this.getLegend().setEnabled(true);
+        this.getLegend().setEnabled(false);
 
     }
 
